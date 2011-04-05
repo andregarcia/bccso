@@ -1,0 +1,26 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[brazil]{babel}
+\usepackage[latin1]{inputenc}
+
+\title{Calculando PI pelo metodo de Monte Carlo}
+\author{Andre Garcia}
+\date{04/04/2010}
+
+\begin{document}
+
+    \maketitle
+
+    \section{Introdução}
+
+        Este documento explica como foi implementado, utilizando-se a linguagem c, o metodo de Monte Carlo para calculo do PI.
+
+    \section{Metodologia}
+
+     Para estimar o valor de PI, foi utilizada a funçao rand() da biblioteca c. Tal funcao foi utilizada de forma a obtermos um numero randomico no intervalo [0,1[. Este procedimento foi realizado para gerarmos tanto um valor para a coordenada x, quanto um valor para a coordenada y. Feito isso, verificou-se se o ponto P=(x,y) encontrava-se dentro da circunferencia de raio 0.5 e centro (0.5, 0.5). O procedimento foi repetido um numero arbitrario de vezes e, caso o ponto P estivesse dentro da circunferencia estipulada, era computado um acerto. Caso contrario era computado um erro. Tendo armazenado o numero de erros e o numero de acertos, o numero PI foi calculado por PI=4*(nAcertos)/(nAcertos+nErros).
+     O metodo descrito acima foi feito em 2 processos separados (utilizando-se a funçao fork()), sendo que cada um deles gerava pontos P, e computava um acerto ou erro. O calculo final da estimativa de PI foi feito pelo processo pai. 
+       \section{Conclusoes}
+
+Verificou-se que o metodo de Monte Carlo estima de forma relativamente simples o valor de PI. Levando em conta que os numeros gerados sao na realidade pseudo randomicos, a estimativa foi muito coerente.
+
+\end{document}
