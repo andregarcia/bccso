@@ -8,7 +8,7 @@
 
 typedef unsigned char byte;
 
-byte mem[100];
+byte mem[MAX];
 
 
 
@@ -16,7 +16,7 @@ byte mem[100];
 void* aloca(int size){
 
     int i=0;
-    for(i=0; i<MAX; i++){
+    for(i=0; i<MAX-size-4-1; i++){
         if(mem[i]==1){
            int tamanho=(int)mem[i+1];
            i+=4;
@@ -25,13 +25,11 @@ void* aloca(int size){
         else if(mem[i]==0){
             int livre=1;
             int j=0;  
-            for(j=i; j<4+1+size; j++){
+            for(j=i; j<i+4+1+size; j++){
                 if(mem[j]==1){
                     livre=0;
                     int tamanho=(int)mem[j+1];
-                    j+=4;
-                    j+=tamanho;
-                    i=j; 
+                    i=j+tamanho+4; 
                 }
             }
             if(livre){
@@ -50,14 +48,36 @@ void* aloca(int size){
 
 void desaloca(void* p){
 
-    p = p - 5;
-    byte *p2 = (byte *)p;  
+
+    byte* p2 = (byte *)p; 
+    p2 = p2 - 5;
+    printf("ENDERECO = %d, VALOR = %c\n", p2, *p2); 
     *p2 = (byte)0; 
 
 }
 
 
+
 int main(){
+    int j=0;
+    for(j=0; j<2; j++){
+        int i=0;
+        printf("N=%d",j);
+        int *p[5];
+        for(i=0; i<5; i++){
+            p[i] = aloca(sizeof(int));
+           *p[i] = i;
+        }
+        for(i=0; i<5; i++){
+            printf("Valor: %d\n", *p[i]);
+        }
+        for(i=0; i<5; i++){
+            desaloca(p[i]);
+        }
+    }
+}
+
+int xmain(){
 
     char *p = (char*) aloca(sizeof(char));
     *p = 'a';

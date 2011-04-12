@@ -4,6 +4,9 @@
 
 all: pi pi.pdf
 
+aloca: aloca_desaloca.c
+	gcc aloca_desaloca.c -o aloca_desaloca -Wall -std=c99
+
 pi: pi.c
 	gcc pi.c -o pi -Wall -std=c99
 
