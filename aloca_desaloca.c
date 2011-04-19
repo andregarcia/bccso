@@ -3,40 +3,37 @@
 #include <stdlib.h>
 
 
-#define MAX 100
+#define MAX 20
 
 
 typedef unsigned char byte;
 
 byte mem[MAX];
 
-
-
-
 void* aloca(int size){
 
     int i=0;
-    for(i=0; i<MAX-size-4-1; i++){
+    while(i<MAX-size-5){
         if(mem[i]==1){
            int tamanho=(int)mem[i+1];
-           i+=4;
+           i+=5;
            i+=tamanho;
         }
         else if(mem[i]==0){
             int livre=1;
             int j=0;  
-            for(j=i; j<i+4+1+size; j++){
+            for(j=i; j<MAX-size-5 && j<i+5+size; j++){
                 if(mem[j]==1){
                     livre=0;
                     int tamanho=(int)mem[j+1];
-                    i=j+tamanho+4; 
+                    i=j+tamanho+5;
                 }
             }
             if(livre){
                 mem[i]=1;
                 mem[i+1]=size;
                 void *p;
-                p = mem+i+4;
+                p = mem+i+5;
                 return p;
             }
         }
@@ -48,33 +45,37 @@ void* aloca(int size){
 
 void desaloca(void* p){
 
+    //pega o tamanho da alocacao
+    int *p1 = (int *)p;
+    p1 = p1 - 1;
+    int tamanho = *p1;
+
 
     byte* p2 = (byte *)p; 
-    p2 = p2 - 5;
-    printf("ENDERECO = %d, VALOR = %c\n", p2, *p2); 
-    *p2 = (byte)0; 
+
+    //seta 0 para todos os bytes a serem desalocados
+    int i=0;
+    for(i=0; i<tamanho; i++){
+        *p2 = 0;
+        p2++;
+    }
+    //volta p2 para o inicio do espaco alocado
+    p2 = p2 - tamanho;
+
+    //seta o controle como 0
+    for(i=0; i<5; i++){
+        p2--;
+        *p2=0;
+    }
+
 
 }
 
-
-
 int main(){
-    int j=0;
-    for(j=0; j<2; j++){
-        int i=0;
-        printf("N=%d",j);
-        int *p[5];
-        for(i=0; i<5; i++){
-            p[i] = aloca(sizeof(int));
-           *p[i] = i;
-        }
-        for(i=0; i<5; i++){
-            printf("Valor: %d\n", *p[i]);
-        }
-        for(i=0; i<5; i++){
-            desaloca(p[i]);
-        }
-    }
+    double *p1 = aloca(sizeof(double));
+    double *p2 = aloca(sizeof(double));
+    desaloca(p1);
+    desaloca(p2);
 }
 
 int xmain(){
